@@ -28,7 +28,9 @@ The elderly patient is the app's only day-to-day user, and is deliberately kept 
 
 ### Roadmap
 
-**Phase 1** ships the Android app and the backend behind it: all three scan types, dosage suggestions, intake and refill reminders, the safety checks (duplicate/interaction, expiry), and SMS-based escalation. **Phase 2** adds the caretaker Web UI, real-time escalation alerts to it, and an AI chat box for follow-up questions, prioritizing Indian-language-first models such as Sarvam AI over generic Western LLMs, since local-language support is core to the product, not an afterthought ([REQ-09](../Requirements/REQ-09-ai-chat-followup.md)).
+**Phase 1** ships the Android app and the backend behind it: all three scan types, dosage suggestions, intake and refill reminders, the safety checks (duplicate/interaction, expiry), and SMS-based escalation. **Phase 2** adds the caretaker Web UI: multi-patient linking ([REQ-16](../Requirements/REQ-16-caretaker-multi-patient-linking.md)), real-time escalation alerts, and caretaker review/override of unresolved scans and dosage ([REQ-17](../Requirements/REQ-17-caretaker-review-and-override.md)). Phase 1 and Phase 2 are built and demoed together — every requirement in both is deterministic and scripted, with no probabilistic component, which matters for a live demo that needs to behave predictably every time.
+
+**Phase 3** is the AI chat box for follow-up questions, prioritizing Indian-language-first models such as Sarvam AI over generic Western LLMs, since local-language support is core to the product, not an afterthought ([REQ-09](../Requirements/REQ-09-ai-chat-followup.md)). It's kept in its own phase, separate from Phase 2, specifically because it's the one part of this system whose output isn't deterministic — an LLM response isn't guaranteed reproducible the way everything else here is.
 
 ### Why the architecture looks the way it does
 
@@ -45,7 +47,7 @@ Put together, these three properties are what point this architecture toward a c
 Two things drove this architecture more than anything else:
 
 1. **Two frontends need the same evolving data.** [REQ-00](../Requirements/REQ-00-behavior-model.md) requires the app to remember everything it learns per user/medicine, across independent scans, and update conclusions (like refill reminders) as new information arrives. [REQ-10](../Requirements/REQ-10-caretaker-web-dashboard.md) requires a caretaker to see and manage that same data from a separate Web UI in Phase 2. Two clients needing one consistent, evolving state means there must be a single source of truth they both talk to — not each client keeping its own copy of the data and logic.
-2. **Python was chosen for easy AI integration** ([REQ-09](../Requirements/REQ-09-ai-chat-followup.md), prioritizing Sarvam AI). A Python backend is the natural home for that, and for the OCR/translation/TTS work in REQ-03/REQ-05.
+2. **Python was chosen for easy AI integration** — the eventual Phase 3 AI chat feature ([REQ-09](../Requirements/REQ-09-ai-chat-followup.md), prioritizing Sarvam AI), and, more immediately, the OCR/translation/TTS work in REQ-03/REQ-05 that Phase 1 needs from day one.
 
 Together, this points to a classic **client-server architecture with a central backend**, rather than putting the REQ-01–REQ-15 business logic on-device.
 

@@ -25,7 +25,7 @@ Every scan is exactly one of three independent input types — there's no combin
 
 The app remembers everything it learns per medicine, across separate scans, and fills in gaps as more information becomes available (e.g. a bill scanned before its prescription still gets a best-effort refill reminder, which is automatically corrected once the prescription is scanned later).
 
-It also warns about duplicate/interacting medicines, checks expiry dates, and can escalate to a caretaker if doses are repeatedly missed. An AI chat box for follow-up questions (prioritizing Indian-language-first models like Sarvam AI) is planned for a later version.
+It also warns about duplicate/interacting medicines, checks expiry dates, and can escalate to a caretaker if doses are repeatedly missed. Phase 1 (the Android app) and Phase 2 (the caretaker web dashboard) are fully deterministic and scripted, and are built and demoed together. An AI chat box for follow-up questions (prioritizing Indian-language-first models like Sarvam AI) is the one probabilistic piece, kept separate as Phase 3.
 
 ## Repository structure
 

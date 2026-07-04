@@ -11,6 +11,7 @@ This implies:
 - A login/account system for the elderly user (not required for Phase 1, where the app can be assumed single-user/local; initial account setup itself is handled in-app by the caretaker per REQ-15).
 - A web-based view for the caretaker to see the same information the app tracks (scanned medicines, prescriptions, reminders, adherence, escalation events from REQ-13).
 - The ongoing, caretaker-facing management complexity — e.g. adding/editing medicines after initial setup — belongs **here**, not in the elderly-facing app. Per REQ-15, the app itself deliberately does not support a caretaker routinely returning to add medicines one by one; that responsibility lives in this dashboard so the elderly user's app can stay minimal and low-risk of getting them stuck on the wrong screen.
+- Resolving scans the system couldn't confidently process, and reviewing/correcting the dosage and reminders currently active for the elderly user, also belong here — see [REQ-17](REQ-17-caretaker-review-and-override.md) for the specifics of that human-supervision layer.
 
 ## Caretaker has their own account, not the elderly user's (decided)
 

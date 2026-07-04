@@ -12,7 +12,7 @@ The caretaker's role in this app (as opposed to the future REQ-10 web dashboard)
 
 - Set up the account/device for the elderly user.
 - Scan the initial prescription(s) and pharmacy bill(s) through the app's normal scan flow (REQ-01/REQ-05/REQ-07) — same as the elderly user would use day to day.
-- Manually enter details only when the system fails to read/identify something (the same manual-entry fallback defined in REQ-05/REQ-07), not as a routine data-entry task.
+- If the system fails to read/identify something during these initial scans, it's flagged as pending caretaker review the same way it would be day to day (REQ-05/REQ-07) — the caretaker does **not** type it in on the device during onboarding either. It gets resolved later via the Web UI (REQ-17, Phase 2).
 - Set up and, going forward, update the escalation contact(s) (REQ-13) at any time.
 - Optionally provide their own caretaker identifier (e.g. email/phone) during this same setup, to link this elderly user to the caretaker's own account (see [REQ-16](REQ-16-caretaker-multi-patient-linking.md), Phase 2). This link can also be added or changed later — it is not required at setup time.
 
