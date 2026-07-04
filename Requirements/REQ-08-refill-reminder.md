@@ -1,6 +1,6 @@
 # REQ-08 — Medicine Refill Reminder
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

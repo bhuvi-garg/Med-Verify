@@ -1,6 +1,6 @@
 # Requirements — Med-Verify
 
-Status: **Draft — pending review**
+Status: **Approved**
 
 Each requirement is a separate file, numbered `REQ-00` onward. This index lists them grouped by the input type they apply to.
 

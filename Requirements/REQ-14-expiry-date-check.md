@@ -1,6 +1,6 @@
 # REQ-14 — Expiry Date Check
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

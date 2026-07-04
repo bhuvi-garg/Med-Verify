@@ -1,6 +1,6 @@
 # REQ-01 — Input Classification
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

@@ -1,6 +1,6 @@
 # REQ-06 — Dosage Intake Reminder
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

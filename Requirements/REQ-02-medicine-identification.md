@@ -1,6 +1,6 @@
 # REQ-02 — Medicine Identification
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

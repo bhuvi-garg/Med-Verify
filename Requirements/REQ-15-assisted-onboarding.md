@@ -1,6 +1,6 @@
 # REQ-15 — Assisted/Caretaker-Led Onboarding
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

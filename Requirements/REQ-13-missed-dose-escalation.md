@@ -1,6 +1,6 @@
 # REQ-13 — Missed-Dose Escalation
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

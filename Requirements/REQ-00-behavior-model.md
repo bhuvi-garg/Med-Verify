@@ -1,6 +1,6 @@
 # REQ-00 — Data Availability & Fallback Behavior
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 
