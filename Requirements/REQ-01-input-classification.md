@@ -17,8 +17,8 @@ See [REQ-00](REQ-00-behavior-model.md) — the app does not require or assume an
 - There is a single, combined scan flow — the user does not pick a mode before scanning; the app determines the type automatically.
 - Given a scanned image/photo, the system classifies it as exactly one of: medicine, prescription, or pharmacy bill.
 - The correct downstream flow is triggered based on classification: REQ-02–REQ-04 for medicine, REQ-05–REQ-06 for prescription, REQ-07–REQ-08 for pharmacy bill.
-- If classification is ambiguous or confidence is low, the app falls back to asking the user to manually select the type, rather than guessing or failing.
+- If classification is ambiguous or confidence is low, the app does **not** ask the elderly user to pick the type — consistent with [REQ-17](REQ-17-caretaker-review-and-override.md)'s rule that the Android app never asks anyone to make a data decision. Instead, the scan is flagged pending caretaker review (same `SCAN_ARTIFACT` mechanism REQ-05/REQ-07 use for unresolved content), and the caretaker classifies and resolves it from the Web UI.
 
 ## Open questions
 
-- What confidence threshold triggers the manual-selection fallback? To be tuned during Design/testing.
+- What confidence threshold triggers the pending-review fallback? To be tuned during Design/testing.
