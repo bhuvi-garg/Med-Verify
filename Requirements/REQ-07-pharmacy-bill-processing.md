@@ -1,6 +1,6 @@
 # REQ-07 — Pharmacy Bill Processing
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

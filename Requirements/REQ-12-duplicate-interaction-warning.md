@@ -1,6 +1,6 @@
 # REQ-12 — Duplicate Medicine / Interaction Warning
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

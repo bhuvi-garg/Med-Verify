@@ -1,6 +1,6 @@
 # REQ-09 — AI Chat Follow-up
 
-Status: Draft — **deferred to a later version, not in initial scope**
+Status: Approved — **deferred to a later version, not in initial scope**
 
 ## Description
 

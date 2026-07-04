@@ -1,6 +1,6 @@
 # REQ-05 — Prescription Dosage Extraction
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

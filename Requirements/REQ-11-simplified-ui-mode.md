@@ -1,6 +1,6 @@
 # REQ-11 — Simplified/Large-UI Mode
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

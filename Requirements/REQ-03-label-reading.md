@@ -1,6 +1,6 @@
 # REQ-03 — Label Reading (Text + Audio, Multi-language)
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 

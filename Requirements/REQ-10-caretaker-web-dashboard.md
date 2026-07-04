@@ -1,6 +1,6 @@
 # REQ-10 — Caretaker Web Dashboard
 
-Status: Draft — **deferred to Phase 2, not in initial scope**
+Status: Approved — **deferred to Phase 2, not in initial scope**
 
 ## Description
 

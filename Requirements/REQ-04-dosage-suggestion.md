@@ -1,6 +1,6 @@
 # REQ-04 — Common Dosage Suggestion
 
-Status: Draft — pending review
+Status: Approved
 
 ## Description
 
