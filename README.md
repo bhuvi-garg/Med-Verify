@@ -32,8 +32,8 @@ It also warns about duplicate/interacting medicines, checks expiry dates, and ca
 This repository is in the pre-implementation phase — requirements are being finalized before any design or code work starts.
 
 - **[Requirements/](Requirements/README.md)** — the full set of requirements for the app, start here for what the app must do.
-- `Design/` — architecture and UI/UX design (not yet started).
-- `Arch/` — architecture artifacts/diagrams (not yet started).
-- `Implementation/` — source code (not yet started).
-- `Test/` — test plans and test code (not yet started).
+- **[Design/](Design/README.md)** — architecture and UI/UX design (not yet started).
+- **[Arch/](Arch/README.md)** — architecture artifacts/diagrams (not yet started).
+- **[Implementation/](Implementation/README.md)** — source code (not yet started).
+- **[Test/](Test/README.md)** — test plans and test code (not yet started).
 - `.claude/` — Claude Code project-local config.
