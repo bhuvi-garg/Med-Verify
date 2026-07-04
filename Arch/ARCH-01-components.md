@@ -1,6 +1,6 @@
 # ARCH-01 — Components
 
-Status: Draft — pending review
+Status: Approved
 
 ## Android app (Phase 1)
 
@@ -13,6 +13,7 @@ Status: Draft — pending review
 ## Web UI (Phase 2)
 
 - Caretaker-facing dashboard ([REQ-10](../Requirements/REQ-10-caretaker-web-dashboard.md)): denser UI, ongoing medicine/contact management, adherence and escalation history.
+- Login is with the caretaker's own account, not the elderly user's credentials. The landing screen is a list of every elderly user linked to that caretaker ([REQ-16](../Requirements/REQ-16-caretaker-multi-patient-linking.md)), from which one is selected to view/manage.
 - Talks to the same backend API as the Android app — no separate backend, no duplicated logic.
 - This is where caretaker-facing complexity is intentionally concentrated, keeping the Android app minimal (per REQ-15's decision that caretakers shouldn't routinely return to the app to manage medicines).
 

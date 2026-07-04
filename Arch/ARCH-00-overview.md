@@ -1,6 +1,44 @@
 # ARCH-00 — Overview
 
-Status: Draft — pending review
+Status: Approved
+
+## Introduction
+
+### The problem
+
+Elderly patients are frequently prescribed multiple medications, often by different doctors, filled at different pharmacies, under different brand names for the same active ingredient. In practice this leads to well-documented, dangerous failure modes: taking two products that are chemically the same drug under different names (accidental double-dosing), missing doses because a schedule was never written down anywhere durable, running out of a medication because no one was tracking the purchased quantity against how fast it's consumed, or continuing to take something past its expiry date because nobody checked. Printed packaging and prescriptions also assume literacy and eyesight that not every elderly patient has, and India in particular adds a language dimension — a prescription or label in English or in unfamiliar terminology is often not something the patient can act on unassisted.
+
+None of this is solved by a single feature. It requires something that can reliably *read* what's in front of the patient (a pill, a handwritten prescription, a pharmacy receipt), *understand* it well enough to reason about chemical identity rather than brand names, *remember* what it has learned across separate, out-of-order interactions, and *act* on that memory safely — nagging, warning, or reminding only when it actually has enough information to do so responsibly.
+
+### What Med-Verify does about it
+
+Med-Verify is a scan-first assistant built around three independent input types, detailed in [Requirements/](../Requirements/README.md):
+
+- **Medicine** — scanning a pill, strip, or packaging identifies it by active chemical ingredient (not just brand), reads the label back in large on-screen text and in the patient's own local language via translated audio, and suggests a standard elderly-appropriate dosage.
+- **Prescription** — scanning a doctor's prescription extracts what medicine, how much, and how often, and turns that into intake reminders that run until the prescribed course ends.
+- **Pharmacy Bill** — scanning a purchase receipt extracts the medicine and quantity bought, and — combined with whatever dosage information is already known — sets up a refill reminder ahead of running out.
+
+Critically, these three scans are not required to happen together, or in any particular order. A caretaker might scan only a pharmacy bill today and the matching prescription weeks later; the system is expected to recognize both refer to the same medicine (by chemical identity, regardless of brand) and upgrade its earlier best-effort conclusions once the better information shows up. That persistence-and-correction behavior, not any single scan, is the hardest and most central requirement in the whole system ([REQ-00](../Requirements/REQ-00-behavior-model.md)) — and the main reason this document set exists.
+
+Beyond the three core scans, the product also actively watches for danger rather than just answering when asked: it warns when two of a patient's medicines are chemically the same or interact ([REQ-12](../Requirements/REQ-12-duplicate-interaction-warning.md)), refuses to suggest a dosage for an expired medicine and tells the patient to replace it instead ([REQ-14](../Requirements/REQ-14-expiry-date-check.md)), and escalates to a caretaker — by SMS and, from Phase 2, a real-time Web UI alert — if scheduled doses are repeatedly missed ([REQ-13](../Requirements/REQ-13-missed-dose-escalation.md)).
+
+### Who it's for, and how setup works
+
+The elderly patient is the app's only day-to-day user, and is deliberately kept out of every piece of complexity that isn't the scan itself: no login, no account recovery, no settings to misconfigure, no denser "advanced" screen to accidentally wander into ([REQ-11](../Requirements/REQ-11-simplified-ui-mode.md)). A caretaker — a family member, typically — performs the one-time setup: creating the account, scanning the patient's existing prescriptions and bills, and registering an emergency contact for escalation ([REQ-15](../Requirements/REQ-15-assisted-onboarding.md)). From Phase 2 onward, that same caretaker gets a separate, more capable Web UI to manage things on an ongoing basis — adding medicines, reviewing adherence history, responding to escalation alerts — without that complexity ever leaking into the elderly user's app ([REQ-10](../Requirements/REQ-10-caretaker-web-dashboard.md)).
+
+### Roadmap
+
+**Phase 1** ships the Android app and the backend behind it: all three scan types, dosage suggestions, intake and refill reminders, the safety checks (duplicate/interaction, expiry), and SMS-based escalation. **Phase 2** adds the caretaker Web UI, real-time escalation alerts to it, and an AI chat box for follow-up questions, prioritizing Indian-language-first models such as Sarvam AI over generic Western LLMs, since local-language support is core to the product, not an afterthought ([REQ-09](../Requirements/REQ-09-ai-chat-followup.md)).
+
+### Why the architecture looks the way it does
+
+Three properties of the product above drove the technical decisions that follow, more than anything else:
+
+- **Elderly-first, caretaker-assisted** means the Android app must stay radically simple, which in turn means it can't be where the real complexity lives — that complexity has to live somewhere else, reachable from a second, separate client.
+- **State persists and self-corrects across independent scans** means whatever holds that state has to be a single, consistent source of truth that both the Android app and the future Web UI can see and act on identically — not two separate copies of the truth that could drift apart.
+- **Safety-relevant by nature** means dosage logic, chemical-identity matching, interaction/expiry checks, and escalation rules need to be implemented once, correctly, and tested in isolation — not duplicated across clients where the same bug would have to be fixed twice.
+
+Put together, these three properties are what point this architecture toward a central backend holding all of the logic and data, with both the Android app and the Web UI as clients against it — covered in detail below.
 
 ## The shape of the system
 
@@ -34,15 +72,16 @@ flowchart TB
         SCHED -.-> SVC
     end
 
-    DB[("🗄️ PostgreSQL<br/>Reference + per-user data")]
-
-    EXT{{"☁️ External Services<br/>OCR · Translation · TTS · Sarvam AI"}}
+    subgraph DATA["Data & External"]
+        direction LR
+        DB[("🗄️ PostgreSQL<br/>Reference + per-user data")]
+        EXT{{"☁️ External Services<br/>OCR · Translation · TTS · Sarvam AI"}}
+    end
 
     Android == "HTTPS / REST" ==> API
     WebUI == "HTTPS / REST" ==> API
     SVC == "reads / writes" ==> DB
     SCHED == "reads due jobs" ==> DB
-    SCHED -. "push in-app reminder" .-> Android
     ADAPT == "API calls" ==> EXT
 
     classDef client fill:#1f6feb,stroke:#123a75,color:#ffffff,stroke-width:1.5px;
@@ -55,10 +94,12 @@ flowchart TB
     class API,SVC,SCHED,ADAPT backend;
     class DB data;
     class EXT external;
-    class CLIENTS,BACKEND groupBox;
+    class CLIENTS,BACKEND,DATA groupBox;
 ```
 
 <sub>🔵 Client apps · 🟢 Backend services · 🟣 Data layer · 🟠 External integrations</sub>
+
+Reminder delivery (Scheduler → Android, in-app push) is intentionally omitted from this diagram to keep the top-to-bottom flow clean — it's a background/async path fully diagrammed in [ARCH-05](ARCH-05-flows.md)'s reminder & escalation sequence.
 
 ## Why not put logic on-device?
 

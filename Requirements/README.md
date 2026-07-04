@@ -18,7 +18,7 @@ Every scan is exactly one of these three — there is no "prescription + bill" c
 | Prescription | [REQ-01](REQ-01-input-classification.md), [REQ-05](REQ-05-prescription-dosage-extraction.md), [REQ-06](REQ-06-dosage-reminder.md) |
 | Pharmacy Bill | [REQ-01](REQ-01-input-classification.md), [REQ-07](REQ-07-pharmacy-bill-processing.md), [REQ-08](REQ-08-refill-reminder.md) *(uses prescription dosage if known, otherwise the REQ-04 default)* |
 | Follow-up (any) | [REQ-09](REQ-09-ai-chat-followup.md) *(deferred)* |
-| Caretaker access (any) | [REQ-10](REQ-10-caretaker-web-dashboard.md) *(deferred to Phase 2)*, [REQ-15](REQ-15-assisted-onboarding.md) |
+| Caretaker access (any) | [REQ-10](REQ-10-caretaker-web-dashboard.md) *(deferred to Phase 2)*, [REQ-15](REQ-15-assisted-onboarding.md), [REQ-16](REQ-16-caretaker-multi-patient-linking.md) *(deferred to Phase 2)* |
 | Elderly usability (cross-cutting) | [REQ-11](REQ-11-simplified-ui-mode.md), [REQ-12](REQ-12-duplicate-interaction-warning.md), [REQ-13](REQ-13-missed-dose-escalation.md), [REQ-14](REQ-14-expiry-date-check.md) |
 
 ## All requirements
@@ -39,6 +39,7 @@ Every scan is exactly one of these three — there is no "prescription + bill" c
 13. [REQ-13 — Missed-Dose Escalation](REQ-13-missed-dose-escalation.md)
 14. [REQ-14 — Expiry Date Check](REQ-14-expiry-date-check.md)
 15. [REQ-15 — Assisted/Caretaker-Led Onboarding](REQ-15-assisted-onboarding.md)
+16. [REQ-16 — Caretaker Account & Multi-Patient Linking](REQ-16-caretaker-multi-patient-linking.md) *(deferred to Phase 2)*
 
 ## Decided since first draft
 
@@ -56,6 +57,7 @@ Every scan is exactly one of these three — there is no "prescription + bill" c
 - **Interaction check (REQ-12)**: same local DB + online fallback data source as REQ-02/REQ-04; runs automatically on every scan, no user action required.
 - **Missed-dose escalation (REQ-13)**: threshold is per-medicine (not one fixed global value); channel is SMS in Phase 1 plus the REQ-10 web dashboard once it exists; caretaker sets up escalation contacts unilaterally during onboarding, no elderly-user approval required.
 - **Expiry check (REQ-14)**: "nearing expiry" warning fires 1 week before the printed expiry date; an expired medicine never gets a dosage suggestion — the app tells the user to get a new one instead, no exceptions.
+- **Caretaker account & multi-patient linking (REQ-16, new, Phase 2)**: the caretaker gets their own account, separate from any elderly user's, and one caretaker account can link to multiple elderly users. Linking can happen optionally during REQ-15 onboarding or be added/changed later; REQ-10's dashboard opens on a list of all linked elderly users.
 
 ## Open questions for review
 

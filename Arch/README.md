@@ -1,6 +1,6 @@
 # Architecture — Med-Verify
 
-Status: **Draft — pending review**
+Status: **Approved**
 
 This is the architecture derived from [Requirements/](../Requirements/README.md), covering how the system is built to support two frontends (Android now, Web UI in Phase 2) sharing one backend.
 
@@ -20,4 +20,5 @@ This is the architecture derived from [Requirements/](../Requirements/README.md)
 - **Python (FastAPI) backend** — chosen partly for easy integration with AI models in Phase 2 (REQ-09, Sarvam AI).
 - **PostgreSQL**, not the SQLite mentioned in early requirements drafts — a shared multi-client backend needs real concurrent access, which SQLite doesn't comfortably provide.
 - **Account-based auth**, set up by the caretaker during onboarding (REQ-15), not a bare device ID — this avoids a painful migration when Phase 2 needs caretaker accounts linked to the same elderly user's data.
+- **Separate caretaker accounts, many-to-many linkable** (REQ-16, Phase 2): a caretaker has their own login, distinct from any elderly user's, and can be linked to multiple elderly users — one dashboard login covers everyone they look after.
 - **Self-hosted, containerized deployment** (Docker Compose), so hosting location can change without an architecture change.

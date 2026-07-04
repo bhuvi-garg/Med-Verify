@@ -1,6 +1,6 @@
 # ARCH-04 — Deployment
 
-Status: Draft — pending review
+Status: Approved
 
 ## Approach
 

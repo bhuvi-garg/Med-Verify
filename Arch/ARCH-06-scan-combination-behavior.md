@@ -1,6 +1,6 @@
 # ARCH-06 — Scan Combination Behavior
 
-Status: Draft — pending review
+Status: Approved
 
 ## Why this document exists
 
