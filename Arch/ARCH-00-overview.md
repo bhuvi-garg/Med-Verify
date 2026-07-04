@@ -28,9 +28,57 @@ The elderly patient is the app's only day-to-day user, and is deliberately kept 
 
 ### Roadmap
 
-**Phase 1** ships the Android app and the backend behind it: all three scan types, dosage suggestions, intake and refill reminders, the safety checks (duplicate/interaction, expiry), and SMS-based escalation. **Phase 2** adds the caretaker Web UI: multi-patient linking ([REQ-16](../Requirements/REQ-16-caretaker-multi-patient-linking.md)), real-time escalation alerts, and caretaker review/override of unresolved scans and dosage ([REQ-17](../Requirements/REQ-17-caretaker-review-and-override.md)). Phase 1 and Phase 2 are built and demoed together — every requirement in both is deterministic and scripted, with no probabilistic component, which matters for a live demo that needs to behave predictably every time.
+**Phase 1** ships the Android app and the backend behind it: all three scan types, dosage suggestions, intake and refill reminders, the safety checks (duplicate/interaction, expiry), and SMS-based escalation.
+
+**Phase 2** adds the caretaker Web UI: multi-patient linking ([REQ-16](../Requirements/REQ-16-caretaker-multi-patient-linking.md)), real-time escalation alerts, and caretaker review/override of unresolved scans and dosage ([REQ-17](../Requirements/REQ-17-caretaker-review-and-override.md)). Phase 1 and Phase 2 are built and demoed together — every requirement in both is deterministic and scripted, with no probabilistic component, which matters for a live demo that needs to behave predictably every time.
 
 **Phase 3** is the AI chat box for follow-up questions, prioritizing Indian-language-first models such as Sarvam AI over generic Western LLMs, since local-language support is core to the product, not an afterthought ([REQ-09](../Requirements/REQ-09-ai-chat-followup.md)). It's kept in its own phase, separate from Phase 2, specifically because it's the one part of this system whose output isn't deterministic — an LLM response isn't guaranteed reproducible the way everything else here is.
+
+```mermaid
+%%{init: {"flowchart": {"curve": "basis"}, "themeVariables": {"fontSize": "15px"}} }%%
+flowchart LR
+    subgraph DEMO["🎯 Competition Demo Scope"]
+        direction LR
+        subgraph P1["📱 PHASE 1 — Android App"]
+            direction TB
+            P1A["3 scan types<br/>Medicine · Prescription · Bill"]
+            P1B["Dosage suggestions"]
+            P1C["Intake & refill reminders"]
+            P1D["Safety checks<br/>interaction · expiry"]
+            P1E["SMS escalation"]
+        end
+
+        subgraph P2["🌐 PHASE 2 — Caretaker Web UI"]
+            direction TB
+            P2A["Multi-patient linking<br/>REQ-16"]
+            P2B["Real-time escalation alerts"]
+            P2C["Review & override<br/>REQ-17"]
+        end
+    end
+
+    subgraph P3["🤖 PHASE 3 — AI Chat<br/><i>(out of demo scope)</i>"]
+        direction TB
+        P3A["Follow-up Q&A<br/>REQ-09"]
+        P3B["Sarvam AI priority"]
+    end
+
+    P1 ==> P2
+    P2 -. "the one probabilistic addition" .-> P3
+
+    classDef phase1 fill:#1f6feb,stroke:#123a75,color:#ffffff,stroke-width:1.5px;
+    classDef phase2 fill:#8250df,stroke:#5a32a3,color:#ffffff,stroke-width:1.5px;
+    classDef phase3 fill:#bf6a02,stroke:#7a4400,color:#ffffff,stroke-width:1.5px;
+    classDef groupBox fill:transparent,stroke:#57606a,stroke-width:1px,stroke-dasharray: 4 3,color:#57606a,font-weight:bold;
+    classDef demoBox fill:transparent,stroke:#d4a72c,stroke-width:2.5px,stroke-dasharray: 6 3,color:#d4a72c,font-weight:bold;
+
+    class P1A,P1B,P1C,P1D,P1E phase1;
+    class P2A,P2B,P2C phase2;
+    class P3A,P3B phase3;
+    class P1,P2,P3 groupBox;
+    class DEMO demoBox;
+```
+
+<sub>🔵 Phase 1 · 🟣 Phase 2 · 🟠 Phase 3 (probabilistic) — the gold dashed box marks what's built together for the competition demo</sub>
 
 ### Why the architecture looks the way it does
 
