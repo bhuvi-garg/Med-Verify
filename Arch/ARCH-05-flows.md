@@ -29,12 +29,7 @@ sequenceDiagram
     API-->>App: signed-in session<br/>(stored in Android Keystore)
     Note right of App: elderly user never sees<br/>a login screen again (ARCH-02)
 
-    loop for each initial prescription / bill
-        App->>API: POST /scan (image)
-        Note over API,DB: same steps as the Scan Flow below
-        API->>SVC: classify + extract + persist
-        SVC->>DB: write USER_MEDICINE,<br/>PRESCRIPTION_ITEM / BILL_ITEM
-    end
+    Note over App,DB: Caretaker scans initial prescriptions/bills here,<br/>using the same Scan Flow (§2) as day-to-day use
 
     App->>API: add escalation contact(s)
     API->>SVC: save_contact()
@@ -75,9 +70,10 @@ sequenceDiagram
     SVC->>SVC: classify as medicine / prescription / bill
 
     alt low confidence
-        SVC-->>API: ambiguous
-        API-->>App: prompt manual type selection
-        Note right of App: REQ-01 fallback —<br/>user picks the type
+        SVC->>DB: write SCAN_ARTIFACT<br/>(status: pending, scan_type_guess: unknown)
+        SVC-->>API: no dosage/reminder yet
+        API-->>App: generic "processed, more<br/>info may follow" response
+        Note right of App: never asked to pick a type —<br/>caretaker classifies + resolves<br/>via Web UI (REQ-01/REQ-17)
     else confident
         SVC->>SVC: route to domain logic<br/>(REQ-02 / REQ-05 / REQ-07)
         SVC->>SVC: resolve, or fall back to<br/>cross-checking a bill/prescription on file
@@ -244,7 +240,6 @@ sequenceDiagram
     end
     participant DB as 🗄️ PostgreSQL
 
-    rect rgb(40,44,52)
     Note over WebUI,DB: Resolving a pending scan (§2)
     WebUI->>API: fetch review queue
     API->>DB: read SCAN_ARTIFACT<br/>(status = pending)
@@ -255,9 +250,7 @@ sequenceDiagram
     SVC->>DB: write USER_MEDICINE,<br/>PRESCRIPTION_ITEM / BILL_ITEM
     SVC->>DB: update SCAN_ARTIFACT<br/>(status: resolved, resolved_by,<br/>resolution_reason, resolved_at)
     SVC-->>API: same downstream logic as a<br/>successful scan (REQ-04/06/08)
-    end
 
-    rect rgb(40,44,52)
     Note over WebUI,DB: Overriding a dosage/reminder directly
     WebUI->>API: fetch current dosage<br/>for a linked elderly user's medicine
     API->>DB: read USER_MEDICINE +<br/>current dosage source
@@ -267,10 +260,8 @@ sequenceDiagram
     API->>SVC: set_dosage_override()
     SVC->>DB: write DOSAGE_OVERRIDE<br/>(reason, set_by, status: active)
     Note right of DB: outranks prescription/standard/<br/>online sources from now on (REQ-04/08)
-    end
 
-    rect rgb(40,44,52)
-    Note over WebUI,DB: New prescription conflicts with an active override —<br/>the ONLY case that ever pauses for confirmation;<br/>every other prescription update applies automatically (REQ-05)
+    Note over WebUI,DB: New prescription conflicts with an active override —<br/>the ONLY case that ever pauses for confirmation,<br/>every other prescription update applies automatically (REQ-05)
     Note over SVC,DB: entered from the Scan Flow (§2) when a<br/>scanned PRESCRIPTION_ITEM targets a<br/>USER_MEDICINE with an active DOSAGE_OVERRIDE
     SVC->>DB: write PRESCRIPTION_CONFLICT_REVIEW<br/>(decision: pending)
     SVC->>API: publish review-needed alert
@@ -284,7 +275,6 @@ sequenceDiagram
         SVC->>DB: leave DOSAGE_OVERRIDE unchanged<br/>(status: active)
     end
     SVC->>DB: update PRESCRIPTION_CONFLICT_REVIEW<br/>(decision, reason, decided_by, decided_at)
-    end
 ```
 
 ## Notes
