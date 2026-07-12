@@ -1,4 +1,4 @@
-# 01 — What is Git and GitHub?
+# What is Git and GitHub?
 
 ## Start with a video game analogy
 
@@ -42,7 +42,7 @@ flowchart LR
     end
 
     REPO == "git push<br/>(send your saves online)" ==> GH
-    GH == "git fetch + reset<br/>(get everyone else's saves)" ==> REPO
+    GH == "git pull<br/>(get everyone else's saves)" ==> REPO
 
     classDef local fill:#1f6feb,stroke:#123a75,color:#ffffff,stroke-width:1.5px;
     classDef remote fill:#bf6a02,stroke:#7a4400,color:#ffffff,stroke-width:1.5px;
@@ -53,7 +53,7 @@ flowchart LR
     class LOCAL,REMOTE groupBox;
 ```
 
-Don't worry about memorizing the exact commands right now — you'll type them for real in the next two files, and it'll click quickly. (You might see other Git tutorials use a command called `git pull` for the "get everyone else's saves" step — this project uses a different pair of commands instead, explained in file 03. Same idea, different exact steps.) For now, just remember the shape of the picture:
+Don't worry about memorizing `git add`, `git commit`, `git push`, and `git pull` right now — you'll type them for real in the next two files, and it'll click quickly. For now, just remember the shape of the picture:
 
 **Your files → picked for saving → saved → sent online → shared with everyone.**
 
@@ -61,14 +61,13 @@ Don't worry about memorizing the exact commands right now — you'll type them f
 
 | Word | What it really means |
 |---|---|
-| **Repository** (or "repo") | A project folder that Git is keeping track of. Med-Verify is a repository. |
+| **Repository** (or "repo") | A project folder that Git is keeping track of. |
 | **Commit** | One saved snapshot of your work, with a short note describing what you changed. |
 | **Clone** | Downloading a full copy of a repository (with all its history) onto your computer. You do this **once**, at the start. |
 | **Staging Area** | A holding area where you put the changes you're about to save, before you actually save them. |
 | **Push** | Sending your saved commits from your computer up to GitHub. |
-| **Fetch** | Checking GitHub for new commits without changing any of your files yet. |
-| **Reset** | Making your project match a specific saved point exactly — this project uses `reset --hard` to catch up to GitHub, which throws away anything different on your computer, so it's always paired with fetch and used carefully (see file 03). |
-| **Force push** (the `+` in `git push origin +branch`) | Sending your commits to GitHub and overwriting whatever was already there, instead of politely asking first. |
+| **Pull** | Downloading commits that other people have pushed to GitHub, and combining them into your own work. |
+| **Branch** | A separate line of work, so you can make changes without disturbing the "official" version. Covered in depth in file 04. |
 | **Status** | Asking Git "what's changed since my last save?" — you'll run this constantly. |
 
 ## Why do we even bother with all this?
@@ -79,6 +78,6 @@ Imagine you and a friend are both editing the same document with no save history
 - If something breaks, which of the last 20 edits caused it?
 - If your laptop dies, is your work gone forever?
 
-Git solves all three: everyone's changes get merged in an organized way, you can find exactly which commit introduced a bug, and GitHub keeps a safe copy online.
+Git solves all three: everyone's changes get combined in an organized way, you can find exactly which commit introduced a bug, and GitHub keeps a safe copy online.
 
-**Next:** [02 — Getting the Project Onto Your Computer](02-first-time-setup.md)
+**Next:** [02 — Cloning a Repository](02-cloning-a-repo.md)
