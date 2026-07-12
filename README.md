@@ -106,4 +106,5 @@ Requirements and architecture are fully specified; implementation hasn't started
 - **[Design/](Design/README.md)** — UI/UX design (not yet started).
 - **[Implementation/](Implementation/README.md)** — source code (not yet started).
 - **[Test/](Test/README.md)** — test plans and test code (not yet started).
+- **[Knowledge/](Knowledge/README.md)** — beginner-friendly guide to Git and GitHub, written for student contributors new to version control.
 - `.claude/` — Claude Code project-local config.
