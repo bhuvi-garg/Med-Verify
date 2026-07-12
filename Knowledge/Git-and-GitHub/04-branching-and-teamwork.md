@@ -14,10 +14,9 @@ Think of it like a **group Google Doc**, but instead of everyone editing the sam
 %%{init: {"flowchart": {"curve": "basis"}, "themeVariables": {"fontSize": "15px"}} }%%
 flowchart TB
     MAIN1(["📚 main<br/><i>the official version</i>"])
-    MAIN1 == "1️⃣ create a branch<br/>from the latest main" ==> BRANCH(["🌿 your branch<br/><i>your own copy</i>"])
-    BRANCH -. "2️⃣ make commits here,<br/>main is completely untouched" .-> BRANCH
-    BRANCH == "3️⃣ push, then open a<br/>Pull Request when done" ==> PR["🔀 Pull Request<br/><i>waiting for review</i>"]
-    PR == "4️⃣ once reviewed,<br/>it gets merged" ==> MAIN2(["📚 main<br/><i>now includes your work</i>"])
+    MAIN1 == "1️⃣ create a branch<br/>from the latest main" ==> BRANCH(["🌿 your branch<br/><i>make your commits here —<br/>main stays untouched</i>"])
+    BRANCH == "2️⃣ push, then open a<br/>Pull Request when done" ==> PR["🔀 Pull Request<br/><i>waiting for review</i>"]
+    PR == "3️⃣ once reviewed,<br/>it gets merged" ==> MAIN2(["📚 main<br/><i>now includes your work</i>"])
 
     classDef main fill:#8250df,stroke:#5a32a3,color:#ffffff,stroke-width:1.5px;
     classDef branch fill:#2ea043,stroke:#1a6b30,color:#ffffff,stroke-width:1.5px;

@@ -46,8 +46,7 @@ Pull → Edit → Status → Add → Commit → Push. Repeat.
 ```mermaid
 %%{init: {"flowchart": {"curve": "basis"}, "themeVariables": {"fontSize": "15px"}} }%%
 flowchart LR
-    MAIN(["📚 main"]) -- "git checkout -b" --> BRANCH(["🌿 your branch"])
-    BRANCH -- "edit, commit" --> BRANCH
+    MAIN(["📚 main"]) -- "git checkout -b" --> BRANCH(["🌿 your branch<br/><i>edit, commit here</i>"])
     BRANCH -- "git push -u origin<br/>your-branch" --> PR["🔀 Pull Request<br/>on GitHub"]
     PR -- "reviewed + merged" --> MAIN
 

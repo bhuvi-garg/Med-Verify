@@ -17,7 +17,7 @@ Those teach the *standard* way things work. **This page is everything Med-Verify
   /mnt/d/Projects/Med-Verify
   ```
 
-- You open it in VS Code from a WSL terminal with `code .`, and confirm the green **"WSL: Ubuntu"** badge in the bottom-left corner — see [VS Code 02](VSCode/02-vscode-with-wsl.md).
+- You open it in VS Code via **Remote Explorer** (connect to your WSL target, then File → Open Folder to your project), and confirm the green **"WSL: Ubuntu"** badge in the bottom-left corner — see [VS Code 02](VSCode/02-vscode-with-wsl.md).
 
 ## Cloning: always SSH
 
@@ -88,6 +88,70 @@ The generic guide says "who clicks merge depends on the project." **On Med-Verif
 2. **Stop there.** Don't click Merge, even if GitHub lets you.
 3. Your teacher reviews it, and merges it themselves when it's ready.
 
+## Addressing review comments
+
+This is the step where most people new to Git get confused — so read this one carefully. Your teacher leaves comments on your PR asking for changes. Here's exactly what to do, and just as importantly, what **not** to do.
+
+**Do NOT:**
+- Run the sync step (`git fetch --all && git reset --hard origin/main`). Your PR's commits aren't in `main` yet — resetting would erase them locally (see the ⚠️ warning below).
+- Create a new branch.
+- Open a second Pull Request.
+
+**Do this instead:**
+
+1. **Make sure you're on the right branch.** If you closed your terminal or restarted VS Code since opening the PR, check first:
+
+   ```bash
+   git branch
+   ```
+
+   This lists your branches and marks your current one with a `*`. If you're not on the branch your PR is from, switch to it:
+
+   ```bash
+   git checkout dev/sm/req-18-barcode-scanning
+   ```
+
+2. **Make the changes your teacher asked for**, directly in the files — same as any normal edit.
+
+3. **Stage and commit, same as always:**
+
+   ```bash
+   git status
+   git add .
+   git commit -m "mv: address review feedback"
+   ```
+
+4. **Push again — using the force form**, since this branch already exists on GitHub:
+
+   ```bash
+   git push origin +dev/sm/req-18-barcode-scanning
+   ```
+
+5. **That's it.** You do **not** need to open a new Pull Request. GitHub automatically shows your new commits on the *same* PR the moment you push — just refresh the PR page and they'll be there, ready for your teacher to look at again.
+
+Repeat this exact loop as many times as needed until your teacher approves and merges it.
+
+```mermaid
+%%{init: {"flowchart": {"curve": "basis"}, "themeVariables": {"fontSize": "15px"}} }%%
+flowchart TB
+    PR["🔀 Pull Request open"] --> REVIEW["🧑‍🏫 Teacher reviews"]
+    REVIEW -- "requests changes" --> CHECK["git branch<br/><i>confirm you're on the right one</i>"]
+    CHECK --> EDIT["✏️ Make the requested changes"]
+    EDIT --> ADD["git add ."]
+    ADD --> COMMIT["git commit -m 'mv: address review feedback'"]
+    COMMIT --> PUSH["git push origin +branch"]
+    PUSH -- "same PR updates<br/>automatically" --> REVIEW
+    REVIEW -- "approved" --> MERGE["✅ Teacher merges"]
+
+    classDef step fill:#2ea043,stroke:#1a6b30,color:#ffffff,stroke-width:1.5px;
+    classDef teacher fill:#1f6feb,stroke:#123a75,color:#ffffff,stroke-width:1.5px;
+    classDef done fill:#8250df,stroke:#5a32a3,color:#ffffff,stroke-width:1.5px;
+
+    class CHECK,EDIT,ADD,COMMIT,PUSH step;
+    class PR,REVIEW teacher;
+    class MERGE done;
+```
+
 ## Merging is always "Rebase and merge"
 
 Of the three GitHub merge strategies explained generically in [Git-and-GitHub 04](Git-and-GitHub/04-branching-and-teamwork.md), **this project always uses "Rebase and merge"** — never "Create a merge commit," never "Squash and merge." Practically, that means:
@@ -121,8 +185,9 @@ flowchart TB
     MORE -- "done for now" --> PUSH
 
     PUSH["git push origin +branch<br/><i>(or plain, if first push)</i>"] --> PR["🔀 Open a Pull Request"]
-    PR --> WAIT["🧑‍🏫 Wait for your teacher<br/>to review and merge"]
-    WAIT --> DONE(["🎉 Done —<br/>start next task from Sync"])
+    PR --> WAIT["🧑‍🏫 Teacher reviews"]
+    WAIT -- "requests changes<br/>(see Addressing<br/>review comments)" --> EDIT
+    WAIT -- "approved" --> DONE(["🎉 Merged —<br/>start next task from Sync"])
 
     classDef step fill:#2ea043,stroke:#1a6b30,color:#ffffff,stroke-width:1.5px;
     classDef warn fill:#bf6a02,stroke:#7a4400,color:#ffffff,stroke-width:1.5px;

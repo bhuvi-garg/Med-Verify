@@ -6,44 +6,48 @@ VS Code is a Windows program. Your project's files, if you're working in WSL, ac
 
 The fix: open VS Code **in WSL mode**, so it connects directly to your Linux files and runs its tools (like its terminal) inside WSL too.
 
-## How to open VS Code correctly
+## How to open VS Code correctly — using Remote Explorer
 
-1. Open a WSL terminal (see the WSL mini-course if you need a reminder).
-2. `cd` into your project folder.
-3. Run:
+This is the way you'll normally do it, entirely from inside VS Code, without needing a terminal open first.
 
-```bash
-code .
-```
-
-This launches VS Code already connected to WSL, sitting in that exact folder.
-
-## How to check it worked
-
-Look at the **bottom-left corner** of the VS Code window. You should see a small green badge that says something like:
-
-```
-><  WSL: Ubuntu
-```
+1. Open VS Code normally (from the Start Menu, taskbar, or desktop shortcut). It opens on the Windows side first — that's expected, keep going.
+2. Click the **Remote Explorer** icon in the Activity Bar (the vertical strip of icons on the far left). It looks like a small monitor/screen. If you don't see it, it comes from the **WSL** extension — ask whoever set up your computer if it's missing.
+3. In the Remote Explorer panel, you'll see your Linux distribution listed (usually **Ubuntu**) under WSL Targets. Click the **Connect in New Window** icon next to it (or right-click it and choose that option).
+4. A new VS Code window opens — this one is connected to WSL. Check the bottom-left corner for the green **WSL: Ubuntu** badge to confirm.
+5. Now open your actual project: **File → Open Folder...**, then browse to it. Because this window is already connected to WSL, the folder browser is showing you the Linux filesystem — navigate to your project's `/mnt/d/...` path.
+6. Once it's open, VS Code will remember it — next time, **File → Open Recent** will list it directly, or you can save it as a workspace (**File → Save Workspace As...**) for a one-click way back in.
 
 ```mermaid
 %%{init: {"flowchart": {"curve": "basis"}, "themeVariables": {"fontSize": "15px"}} }%%
-flowchart LR
-    A["🐧 WSL terminal,<br/>cd into project"] -- "code ." --> B["🖥️ VS Code opens"]
-    B --> C{"Green badge says<br/>'WSL: Ubuntu'?"}
-    C -- "yes ✅" --> D["You're editing your<br/>real Linux files"]
-    C -- "no ❌" --> E["Close VS Code and<br/>run code . again,<br/>from a WSL terminal"]
+flowchart TB
+    A["🖥️ Open VS Code normally<br/><i>(Windows side, for now)</i>"] --> B["🔌 Click Remote Explorer<br/>in the Activity Bar"]
+    B --> C["🐧 Connect in New Window<br/>on your WSL target"]
+    C --> D["📁 File → Open Folder...<br/>browse to your project"]
+    D --> E{"Green badge says<br/>'WSL: Ubuntu'?"}
+    E -- "yes ✅" --> F["You're editing your<br/>real Linux files"]
+    E -- "no ❌" --> A
 
     classDef good fill:#2ea043,stroke:#1a6b30,color:#ffffff,stroke-width:1.5px;
     classDef bad fill:#bf6a02,stroke:#7a4400,color:#ffffff,stroke-width:1.5px;
     classDef step fill:#1f6feb,stroke:#123a75,color:#ffffff,stroke-width:1.5px;
 
-    class A,B,C step;
-    class D good;
-    class E bad;
+    class A,B,C,D,E step;
+    class F good;
 ```
 
-If that badge is **missing**, VS Code most likely opened a separate Windows-side view instead of your real WSL project — close the window and re-run `code .` from your WSL terminal.
+## An alternative you might see elsewhere
+
+Some tutorials instead show opening a WSL terminal, `cd`-ing into the project, and running `code .` — this reaches the exact same end state (VS Code connected to WSL, in that folder), just starting from a terminal instead of the Remote Explorer UI. Both are valid; this project's setup uses the Remote Explorer / workspace approach above, so that's the one to default to.
+
+## How to check it worked
+
+However you opened it, always confirm the same way: look at the **bottom-left corner** of the VS Code window for a small green badge that says something like:
+
+```
+><  WSL: Ubuntu
+```
+
+If that badge is **missing**, VS Code is showing you a separate Windows-side view, not your real WSL project — close the window and reconnect via Remote Explorer.
 
 ## Why this matters
 

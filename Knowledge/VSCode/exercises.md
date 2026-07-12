@@ -30,14 +30,15 @@ pwd
 If VS Code is open normally (not in WSL mode), this might print a Windows-style path. Keep this result — you'll compare it in Exercise 3.
 </details>
 
-## Exercise 3 — Open the same project in WSL mode
+## Exercise 3 — Open the same project in WSL mode, via Remote Explorer
 
 1. Close VS Code.
-2. Open a WSL terminal.
-3. `cd` into the same project folder, using its `/mnt/...` path.
-4. Run `code .`.
-5. Once VS Code opens, check the bottom-left corner for the green **WSL: Ubuntu** badge.
-6. Open the integrated terminal again (`` Ctrl+` ``) and run `pwd`.
+2. Open VS Code again, normally (Start Menu/taskbar/desktop shortcut).
+3. Click the **Remote Explorer** icon in the Activity Bar.
+4. Find your Linux distribution under WSL Targets, and choose **Connect in New Window**.
+5. Once the new window opens, check the bottom-left corner for the green **WSL: Ubuntu** badge.
+6. Use **File → Open Folder...** to browse to and open the same project folder (its `/mnt/...` path).
+7. Open the integrated terminal (`` Ctrl+` ``) and run `pwd`.
 
 <details>
 <summary>What should be different this time?</summary>
