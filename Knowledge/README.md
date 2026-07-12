@@ -1,20 +1,30 @@
-# Learning Git & GitHub
+# Learning Center
 
-Welcome! This folder teaches you how to use **Git** and **GitHub** so you can work on the Med-Verify project (and any coding project, ever again).
+Welcome! This folder teaches you the skills you need to work on Med-Verify (and any coding project, ever again).
 
-You don't need to know anything about Git yet. We'll start from zero.
+## Structure
 
-## Read these in order
+There are three **generic, reusable** mini-courses — each is self-contained and doesn't assume anything about Med-Verify specifically. Feel free to copy any one of these folders into a different project if it's useful there too.
 
-0. **[00 — Windows Terminal, WSL, and Basic Linux Commands](00-wsl-and-terminal-basics.md)** — the environment you'll be typing commands into, and the handful of Linux commands you need first.
-1. **[01 — What is Git and GitHub?](01-what-is-git-and-github.md)** — the big idea, in plain words, with a picture.
-2. **[02 — Getting the Project Onto Your Computer](02-first-time-setup.md)** — the very first thing you do, one time only.
-3. **[03 — Your Everyday Workflow](03-everyday-workflow.md)** — the loop you repeat every single day you write code.
-4. **[04 — Branching & Working With Others](04-branching-and-teamwork.md)** — how you and a teammate work on different things at once, and how it all comes back together.
-5. **[05 — Cheat Sheet](05-cheat-sheet.md)** — one page you can keep open while you work.
+- **[WSL/](WSL/README.md)** — Windows Terminal, WSL, and basic Linux commands.
+- **[VSCode/](VSCode/README.md)** — the VS Code editor, and using it together with WSL.
+- **[Git-and-GitHub/](Git-and-GitHub/README.md)** — Git fundamentals, everyday workflow, and branching/Pull Requests.
+
+Then one **project-specific** page ties it all together:
+
+- **[Med-Verify-Workflow.md](Med-Verify-Workflow.md)** — everything Med-Verify does differently (or more specifically) than the generic mini-courses above: SSH cloning, the `/mnt/d/Projects/Med-Verify` path, the sync-instead-of-pull convention, branch naming, commit message format, and the Pull-Request-ends-your-job rule.
+
+## Suggested reading order
+
+If you're brand new, go in this order:
+
+1. [WSL/](WSL/README.md)
+2. [VSCode/](VSCode/README.md)
+3. [Git-and-GitHub/](Git-and-GitHub/README.md)
+4. [Med-Verify-Workflow.md](Med-Verify-Workflow.md)
+
+Each of the three mini-courses ends with an `exercises.md` — do them before moving on, they're the fastest way to make sure it actually stuck.
 
 ## The one-sentence version
 
-> Git saves snapshots of your code as you work, and GitHub is a website that stores those snapshots online so you (and others) can get them from anywhere.
-
-If that sentence doesn't fully make sense yet — that's exactly what file 01 is for. Let's go.
+> WSL gives you a Linux environment inside Windows, VS Code is where you'll read and write code, and Git/GitHub save and share snapshots of that code — Med-Verify just has its own specific rules for exactly how those tools get used.
