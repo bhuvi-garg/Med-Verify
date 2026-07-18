@@ -103,8 +103,8 @@ Requirements and architecture are fully specified; implementation hasn't started
 
 - **[Requirements/](Requirements/README.md)** — the full, approved requirement set (REQ-00 through REQ-17) — what the app must do, and why.
 - **[Arch/](Arch/README.md)** — the full, approved architecture — client/backend/data-layer design, entity model, and every key flow as a diagram.
-- **[Design/](Design/README.md)** — UI/UX design (not yet started).
-- **[Implementation/](Implementation/README.md)** — source code (not yet started).
+- **[Design/](Design/README.md)** — UI/UX design, split into `Android/`, `WebUI/`, `Backend/`, and `Interop/` (the frontend↔backend JSON contract) — not yet started.
+- **[Implementation/](Implementation/README.md)** — source code, mirroring the same `Android/`, `WebUI/`, `Backend/`, `Interop/` split (each of the first three also has its own `config/`) — not yet started.
 - **[Test/](Test/README.md)** — test plans and test code (not yet started).
 - **[Knowledge/](Knowledge/README.md)** — beginner-friendly guides to WSL, VS Code, and Git/GitHub, written for student contributors new to these tools.
 - `.claude/` — Claude Code project-local config.
