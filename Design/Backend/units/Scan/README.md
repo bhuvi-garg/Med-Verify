@@ -103,7 +103,7 @@ process_scan(scan_input):
     7. if expiry.expired:
            dosage = None   # REQ-14: no exceptions, ever
        else:
-           dosage = dosage.get_dosage(self.db, medicine)
+           dosage = dosage.get_dosage(self.db, user_medicine, medicine)
 
     8. component_ids = medicine_resolution.get_chemical_component_ids(self.db, medicine.id)
        component_names = medicine_resolution.get_chemical_component_names(self.db, component_ids)
