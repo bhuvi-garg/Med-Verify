@@ -117,6 +117,8 @@ Join table — a medicine's full set of active ingredients. REQ-02's "complete o
 ### `chemical_dosage_reference`
 New table (not in ARCH-03) — standard elderly dosage per **single** chemical component. See Open Questions below for the combination-drug limitation this implies.
 
+**This table is intentionally shared/global, not per-account** — it's REQ-04's Tier 3 generic fallback, not a place to store any individual patient's actual prescribed dose. For example: if User A is prescribed `1-0-1` and User B is prescribed `2-0-2` for the same medicine, neither value belongs here — each lives in that user's own `prescription_item` row (per-account, via `user_medicine`; not yet part of this slice's schema), which outranks this table per REQ-04's fallback order. Until prescription-scanning (REQ-05) is implemented, every account sees the same value from this table for a given medicine, clearly labeled as a non-personalized suggestion (see the [Dosage unit](units/Dosage/README.md)) — that's expected for now, not a design flaw.
+
 | Column | Type | Constraints |
 |---|---|---|
 | `id` | `uuid` | PK |
