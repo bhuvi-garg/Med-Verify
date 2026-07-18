@@ -45,7 +45,7 @@ sequenceDiagram
 
 ## 2. Scan flow
 
-Covers [REQ-01](../Requirements/REQ-01-input-classification.md) through the relevant downstream requirement depending on classification, plus the automatic safety checks that run alongside it.
+Covers [REQ-01](../Requirements/REQ-01-input-classification.md) through the relevant downstream requirement depending on classification, plus the automatic safety checks that run alongside it. **OCR and classification run on-device in the Android app** (see [ARCH-00](ARCH-00-overview.md#why-not-put-logic-on-device-and-the-one-exception) and [ARCH-01](ARCH-01-components.md)) — the backend receives the image plus whatever Android already extracted, not a raw image to process itself. The image is uploaded **on every scan**, resolved or not, so the caretaker always has something to review later.
 
 ```mermaid
 %%{init: {"theme": "base", "themeVariables": {"actorBkg": "#1f6feb", "actorBorder": "#123a75", "actorTextColor": "#ffffff", "actorLineColor": "#57606a", "signalColor": "#57606a", "signalTextColor": "#1f2328", "labelBoxBkgColor": "#8250df", "labelBoxBorderColor": "#5a32a3", "labelTextColor": "#ffffff", "noteBkgColor": "#fff8c5", "noteBorderColor": "#bf8700"}} }%%
@@ -59,27 +59,23 @@ sequenceDiagram
         participant SVC as Service Layer
     end
     participant DB as 🗄️ PostgreSQL
-    box rgb(191,106,2) External
-        participant EXT as ☁️ OCR/Translation/TTS
-    end
 
-    App->>API: POST /scan (image)
-    API->>SVC: classify(image)
-    SVC->>EXT: extract text/data
-    EXT-->>SVC: extracted text
-    SVC->>SVC: classify as medicine / prescription / bill
+    App->>App: on-device OCR +<br/>classify (REQ-01)
+    App->>API: POST /scan<br/>(image always + extracted fields,<br/>fields may be partially/fully null)
 
-    alt low confidence
-        SVC->>DB: write SCAN_ARTIFACT<br/>(status: pending, scan_type_guess: unknown)
+    alt Android couldn't classify/extract confidently
+        API->>SVC: process(image, fields=null)
+        SVC->>DB: write SCAN_ARTIFACT<br/>(status: pending, image stored,<br/>scan_type_guess: unknown)
         SVC-->>API: no dosage/reminder yet
         API-->>App: generic "processed, more<br/>info may follow" response
         Note right of App: never asked to pick a type —<br/>caretaker classifies + resolves<br/>via Web UI (REQ-01/REQ-17)
-    else confident
-        SVC->>SVC: route to domain logic<br/>(REQ-02 / REQ-05 / REQ-07)
+    else Android classified confidently
+        API->>SVC: process(image, fields)
+        SVC->>SVC: route to domain logic<br/>(REQ-02 / REQ-05 / REQ-07)<br/>using Android's extracted fields
         SVC->>SVC: resolve, or fall back to<br/>cross-checking a bill/prescription on file
 
         alt still unresolved
-            SVC->>DB: write SCAN_ARTIFACT<br/>(status: pending, image attached)
+            SVC->>DB: write SCAN_ARTIFACT<br/>(status: pending, image stored)
             SVC-->>API: no dosage/reminder yet
             API-->>App: generic "processed, more<br/>info may follow" response
             Note right of App: never a manual-entry prompt —<br/>caretaker resolves via Web UI (REQ-17)
@@ -101,6 +97,8 @@ sequenceDiagram
                 end
                 SVC-->>API: structured result<br/>(+ dosage / warnings)
             end
+            SVC->>DB: write SCAN_ARTIFACT<br/>(status: resolved, image stored,<br/>resolved_into_user_medicine_id set)
+            Note right of DB: written even though resolved —<br/>every scan's image is kept, not<br/>just failed ones
             API-->>App: response
             App->>App: render large text +<br/>play translated TTS audio
         end

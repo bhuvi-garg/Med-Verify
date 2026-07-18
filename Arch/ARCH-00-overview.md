@@ -95,9 +95,9 @@ Put together, these three properties are what point this architecture toward a c
 Two things drove this architecture more than anything else:
 
 1. **Two frontends need the same evolving data.** [REQ-00](../Requirements/REQ-00-behavior-model.md) requires the app to remember everything it learns per user/medicine, across independent scans, and update conclusions (like refill reminders) as new information arrives. [REQ-10](../Requirements/REQ-10-caretaker-web-dashboard.md) requires a caretaker to see and manage that same data from a separate Web UI in Phase 2. Two clients needing one consistent, evolving state means there must be a single source of truth they both talk to — not each client keeping its own copy of the data and logic.
-2. **Python was chosen for easy AI integration** — the eventual Phase 3 AI chat feature ([REQ-09](../Requirements/REQ-09-ai-chat-followup.md), prioritizing Sarvam AI), and, more immediately, the OCR/translation/TTS work in REQ-03/REQ-05 that Phase 1 needs from day one.
+2. **Python was chosen for easy AI integration** — the eventual Phase 3 AI chat feature ([REQ-09](../Requirements/REQ-09-ai-chat-followup.md), prioritizing Sarvam AI), and, more immediately, the translation/TTS work in REQ-03 that Phase 1 needs from day one. (OCR itself runs on-device — see "Why not put logic on-device?" below.)
 
-Together, this points to a classic **client-server architecture with a central backend**, rather than putting the REQ-01–REQ-15 business logic on-device.
+Together, this points to a classic **client-server architecture with a central backend**, rather than putting REQ-02–REQ-17's shared business logic on-device. (REQ-01's initial classification is the one exception — see "Why not put logic on-device?" below.)
 
 ## High-level diagram
 
@@ -106,14 +106,14 @@ Together, this points to a classic **client-server architecture with a central b
 flowchart TB
     subgraph CLIENTS["🖥️ CLIENT APPLICATIONS"]
         direction LR
-        Android(["📱 Android App<br/><i>Phase 1 · Elderly-facing</i>"])
+        Android(["📱 Android App<br/><i>Phase 1 · Elderly-facing<br/>on-device OCR + classification</i>"])
         WebUI(["🌐 Web UI<br/><i>Phase 2 · Caretaker-facing</i>"])
     end
 
     subgraph BACKEND["🐍 PYTHON BACKEND — FastAPI"]
         direction TB
         API["API Layer<br/>REST endpoints per domain"]
-        SVC["Service Layer<br/>REQ-01 → REQ-15 business logic"]
+        SVC["Service Layer<br/>REQ-02 → REQ-17 business logic"]
         SCHED["Scheduler<br/>Reminders · Escalation"]
         ADAPT["Integration Adapters"]
 
@@ -125,7 +125,7 @@ flowchart TB
     subgraph DATA["Data & External"]
         direction LR
         DB[("🗄️ PostgreSQL<br/>Reference + per-user data")]
-        EXT{{"☁️ External Services<br/>OCR · Translation · TTS · Sarvam AI"}}
+        EXT{{"☁️ External Services<br/>Translation · TTS · Sarvam AI"}}
     end
 
     Android == "HTTPS / REST" ==> API
@@ -151,15 +151,24 @@ flowchart TB
 
 Reminder delivery (Scheduler → Android, in-app push) is intentionally omitted from this diagram to keep the top-to-bottom flow clean — it's a background/async path fully diagrammed in [ARCH-05](ARCH-05-flows.md)'s reminder & escalation sequence.
 
-## Why not put logic on-device?
+## Why not put logic on-device? (and the one exception)
 
-Early requirement notes (REQ-02) mentioned a "local SQLite database" for the brand→chemical lookup, which reads like an on-device, offline-first design. That's a reasonable instinct for elderly users with unreliable connectivity, but it doesn't hold up once REQ-10's caretaker web dashboard enters the picture — duplicating REQ-01–REQ-15's logic and data in two places (on-device and on a future server) would mean solving cross-client consistency twice, or migrating everything later. Centralizing now avoids that rework. Offline resilience is instead handled by the Android app caching recent data locally (see [ARCH-01](ARCH-01-components.md)), not by owning the source of truth.
+Early requirement notes (REQ-02) mentioned a "local SQLite database" for the brand→chemical lookup, which reads like an on-device, offline-first design. That's a reasonable instinct for elderly users with unreliable connectivity, but it doesn't hold up once REQ-10's caretaker web dashboard enters the picture — duplicating logic and data in two places (on-device and on a future server) would mean solving cross-client consistency twice, or migrating everything later. Centralizing now avoids that rework. Offline resilience is instead handled by the Android app caching recent data locally (see [ARCH-01](ARCH-01-components.md)), not by owning the source of truth.
+
+**The actual test, stated precisely**: a piece of behavior belongs on the backend if its output needs to be *consistent across both frontends*, or if it operates on data that's *shared or persisted centrally* (REQ-00's per-account history, the chemical-identity reference data, anything the caretaker Web UI needs to see later). If a piece of behavior is consumed by exactly one frontend and never touches shared state, keeping it there isn't "duplicating logic that needs to stay in sync" — there's only one copy to begin with.
+
+**Applying that test surfaces one real exception**: OCR (extracting text/fields from a scanned image) and the initial scan classification (REQ-01 — deciding medicine vs. prescription vs. bill) are consumed *only* by the Android app. The caretaker Web UI never performs OCR or classification — REQ-17's review flow has a human directly reading an image, not running automated extraction. So both live **on the Android app**, not the backend. Everything downstream of that — chemical-identity resolution against the shared reference data, per-account persistence, dosage/interaction/expiry logic — still needs one consistent answer across both frontends, and stays on the backend exactly as reasoned above.
+
+Moving OCR's *computation* to Android does not mean the raw image stops reaching the backend — it still does, **on every scan**, not just failed ones. The backend never re-runs OCR on it, but it does persist it, so the caretaker can always see exactly what the elderly user scanned, whether the scan resolved cleanly or not (REQ-17's review case is then just "the subset of these images where `status = pending`," not a separately-triggered upload).
+
+Translation and TTS (REQ-03) are currently still listed as backend adapters below, but are worth revisiting under this same test in a later pass — they may turn out to be Android-only consumers too (see Open Questions).
 
 ## What lives where
 
 | Concern | Lives in |
 |---|---|
-| Business logic (REQ-01–REQ-15) | Backend service layer |
+| OCR (image → text/fields) and initial scan classification (REQ-01) | **Android app** — single-consumer, no shared state involved |
+| Business logic operating on shared/persisted data (REQ-02, REQ-04–REQ-17) | Backend service layer |
 | Source-of-truth data (accounts, reference data, scans, reminders) | Backend, PostgreSQL |
 | UI rendering, camera capture, TTS playback | Clients (Android, Web) |
 | Local cache for offline resilience | Android app only |
@@ -170,4 +179,5 @@ See [ARCH-01](ARCH-01-components.md) for the component breakdown, [ARCH-02](ARCH
 ## Open questions
 
 - Exact offline scope for the Android app (what specifically must work with no connectivity) is not yet defined — affects how much local caching logic is needed.
-- Choice of specific OCR/translation/TTS vendors is deferred (per REQ-03/REQ-05); the adapter pattern in ARCH-01 exists specifically so this choice doesn't ripple through the service layer.
+- Choice of specific OCR vendor/library for Android (e.g. on-device ML Kit vs. a bundled model) is deferred — see [Design/Android](../Design/Android/README.md) once that work starts.
+- Choice of specific translation/TTS vendors is deferred (per REQ-03); the adapter pattern in ARCH-01 exists specifically so this choice doesn't ripple through the service layer, **if** they stay backend-side — revisit whether they should move to Android under the same single-consumer test applied to OCR above.
