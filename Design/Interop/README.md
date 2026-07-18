@@ -6,4 +6,6 @@ This is the single source of truth both frontends (Android, WebUI) and the Backe
 
 Scope each contract document to what's actually needed next, rather than trying to fully specify every endpoint upfront.
 
-Not started yet.
+- **[scan-endpoint.md](scan-endpoint.md)** — `POST /scan` for the medicine-scan slice: request shape, and every response variant (resolved, expired, pending, error).
+
+Only `/scan` is specified so far, and only its medicine path — the rest of the endpoints listed above are designed as their slices come up.

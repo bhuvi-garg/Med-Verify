@@ -9,4 +9,6 @@ Must respect two hard constraints from [Requirements/](../../Requirements/README
 
 Ground the screen list in [Arch/ARCH-05](../../Arch/ARCH-05-flows.md)'s Onboarding and Scan flows — they map closely to what screens/navigation are actually needed.
 
-Not started yet.
+- **[units/](units/README.md)** — the two units that run on-device (OCR, Classification), per [Arch/ARCH-00](../../Arch/ARCH-00-overview.md#why-not-put-logic-on-device-and-the-one-exception)'s single-consumer test. Everything else the app needs is served by [Design/Backend/units/](../Backend/units/README.md).
+
+Screen/navigation design (beyond the two units above) is not started yet.
